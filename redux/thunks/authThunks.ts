@@ -3,7 +3,7 @@
  * Async actions for authentication API calls (login, register, logout)
  */
 
-import authService from "@/services/authService";
+import { authService } from "@/services/authService";
 import type { LoginRequest, RegisterRequest, User } from "@/types/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk } from "@reduxjs/toolkit";
@@ -103,16 +103,25 @@ export const registerUser = createAsyncThunk<
 export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
   "auth/logoutUser",
   async (_, { rejectWithValue }) => {
+    let logoutError: string | null = null;
+
     try {
+      console.log("[Auth Thunk] Starting logout...");
       await authService.logout();
-      // Also clear stored tokens
-      await AsyncStorage.removeItem("authToken");
-      await AsyncStorage.removeItem("user");
+      console.log("[Auth Thunk] Logout API call success");
     } catch (error: any) {
-      console.error("[Auth Thunk] Logout error:", error.message);
-      // Don't reject - always clear local state even if API call fails
+      logoutError = error.message || "Logout API failed";
+      console.error("[Auth Thunk] Logout error:", logoutError);
+    } finally {
+      // Always clear local auth data, even when API fails
       await AsyncStorage.removeItem("authToken").catch(console.error);
+      await AsyncStorage.removeItem("refreshToken").catch(console.error);
       await AsyncStorage.removeItem("user").catch(console.error);
+      console.log("[Auth Thunk] Local auth storage cleared");
+    }
+
+    if (logoutError) {
+      return rejectWithValue(logoutError);
     }
   },
 );

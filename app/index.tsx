@@ -8,7 +8,7 @@ export default function IndexRoute() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
   if (isAuthenticated) {
-    return <Redirect href="/(tabs)" />;
+    return <Redirect href="/(tabs)/home" />;
   }
 
   return <Redirect href="/auth/login" />;

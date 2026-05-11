@@ -5,9 +5,9 @@
 
 import { apiClient } from "@/services/api/client";
 import type {
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
+    LoginRequest,
+    LoginResponse,
+    RegisterRequest,
 } from "@/types/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -30,19 +30,6 @@ const saveTokenToStorage = async (
   } catch (error) {
     console.error("Error saving token to storage:", error);
     throw error;
-  }
-};
-
-/**
- * Helper function to clear auth from AsyncStorage
- */
-const clearAuthFromStorage = async (): Promise<void> => {
-  try {
-    await AsyncStorage.removeItem("authToken");
-    await AsyncStorage.removeItem("refreshToken");
-    await AsyncStorage.removeItem("user");
-  } catch (error) {
-    console.error("Error clearing auth from storage:", error);
   }
 };
 
@@ -132,14 +119,11 @@ export const authService = {
    * Logout current user and clear token
    */
   async logout(): Promise<void> {
-    try {
-      await apiClient.post("/api/v1/auth/logout");
-      await clearAuthFromStorage();
-    } catch (error) {
-      console.error("Logout error:", error);
-      // Still clear local storage even if request fails
-      await clearAuthFromStorage();
-    }
+    const refreshToken = await AsyncStorage.getItem("refreshToken");
+    const payload = refreshToken ? { refresh_token: refreshToken } : {};
+
+    console.log("[Logout] Sending request to /api/v1/auth/logout", payload);
+    await apiClient.post("/api/v1/auth/logout", payload);
   },
 
   /**

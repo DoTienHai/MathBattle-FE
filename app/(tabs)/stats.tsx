@@ -1,12 +1,14 @@
 import React from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 
-export default function HomeScreen() {
+export default function StatsScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Welcome to MathBattle! 🎯</Text>
-        <Text style={styles.subtitle}>Let's start solving math problems</Text>
+        <Text style={styles.title}>Stats</Text>
+        <Text style={styles.subtitle}>
+          Performance analytics will be shown here.
+        </Text>
       </View>
     </SafeAreaView>
   );
@@ -15,7 +17,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F5F7FC",
   },
   content: {
     flex: 1,
@@ -24,16 +26,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "700",
     color: "#0D0D1B",
-    marginBottom: 12,
-    textAlign: "center",
+    marginBottom: 8,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "500",
-    color: "#6B7280",
+    color: "#7A8295",
     textAlign: "center",
   },
 });

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"d:\\\\01_CODING\\\\MathBattle\\\\MathBattle-FE\" -Force)",
+      "Bash(Select-Object Name, FullName)",
+      "Bash(Format-Table -AutoSize)",
+      "PowerShell(head -50)",
+      "Bash(git add .)",
+      "Bash(git commit -m \"Update\")",
+      "Bash(git push origin master)"
+    ]
+  }
+}

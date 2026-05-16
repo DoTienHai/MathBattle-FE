@@ -4,14 +4,13 @@
  */
 
 import authReducer from "@/redux/slices/authSlice";
+import quickCalculateReducer from "@/redux/slices/quickCalculateSlice";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    // Add more slices here as needed
-    // game: gameReducer,
-    // user: userReducer,
+    quickCalculate: quickCalculateReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

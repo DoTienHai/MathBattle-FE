@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   RefreshControl,
   ScrollView,
@@ -16,13 +16,16 @@ import {
   selectProfileLoading,
   selectUserBadges,
 } from "@/redux/selectors/profileSelectors";
+import { clearUpdateError } from "@/redux/slices/profileSlice";
 import type { AppDispatch } from "@/redux/store";
 import {
   fetchBasicProfile,
   fetchPersonalStats,
   fetchUserBadges,
+  updateProfile,
 } from "@/redux/thunks/profileThunks";
 import { BadgesSection } from "@/components/profile/BadgesSection";
+import { EditProfileModal } from "@/components/profile/EditProfileModal";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { StatsGrid } from "@/components/profile/StatsGrid";
 
@@ -33,6 +36,8 @@ export function ProfileScreen() {
   const badges = useSelector(selectUserBadges);
   const loading = useSelector(selectProfileLoading);
   const error = useSelector(selectProfileError);
+
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
   const loadAll = useCallback(() => {
     void Promise.all([
@@ -45,6 +50,25 @@ export function ProfileScreen() {
   useEffect(() => {
     loadAll();
   }, [loadAll]);
+
+  const handleOpenEditModal = useCallback(() => {
+    dispatch(clearUpdateError());
+    setEditModalVisible(true);
+  }, [dispatch]);
+
+  const handleCloseEditModal = useCallback(() => {
+    setEditModalVisible(false);
+  }, []);
+
+  const handleSaveProfile = useCallback(
+    async (username?: string, fullName?: string) => {
+      const result = await dispatch(updateProfile({ username, fullName }));
+      if (updateProfile.fulfilled.match(result)) {
+        setEditModalVisible(false);
+      }
+    },
+    [dispatch],
+  );
 
   const isRefreshing = loading.basicInfo || loading.stats || loading.badges;
 
@@ -62,7 +86,11 @@ export function ProfileScreen() {
           <View style={styles.bubbleTopRight} />
           <View style={styles.bubbleTopLeft} />
           <Text style={styles.screenTitle}>Profile</Text>
-          <ProfileHeader info={basicInfo} isLoading={loading.basicInfo} />
+          <ProfileHeader
+            info={basicInfo}
+            isLoading={loading.basicInfo}
+            onEditPress={handleOpenEditModal}
+          />
         </View>
 
         {error.basicInfo ? (
@@ -83,6 +111,18 @@ export function ProfileScreen() {
           ) : null}
         </View>
       </ScrollView>
+
+      {basicInfo ? (
+        <EditProfileModal
+          visible={editModalVisible}
+          initialUsername={basicInfo.username}
+          initialFullName={basicInfo.fullName}
+          isLoading={loading.update}
+          externalError={error.update}
+          onSave={handleSaveProfile}
+          onClose={handleCloseEditModal}
+        />
+      ) : null}
     </SafeAreaView>
   );
 }

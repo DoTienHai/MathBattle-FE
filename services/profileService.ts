@@ -2,6 +2,7 @@ import { apiClient } from "@/services/api/client";
 import type {
   BasicProfileResponse,
   PersonalStatsResponse,
+  UpdateProfileResponse,
   UserBadgesResponse,
 } from "@/types/profile";
 
@@ -23,6 +24,17 @@ export const profileService = {
   async getUserBadges(): Promise<UserBadgesResponse> {
     const response = await apiClient.get<UserBadgesResponse>(
       "/api/v1/profile/badges?limit=50&offset=0",
+    );
+    return response.data;
+  },
+
+  async updateProfile(body: {
+    username?: string;
+    full_name?: string;
+  }): Promise<UpdateProfileResponse> {
+    const response = await apiClient.patch<UpdateProfileResponse>(
+      "/api/v1/profile",
+      body,
     );
     return response.data;
   },

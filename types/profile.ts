@@ -33,6 +33,16 @@ export interface UserBadges {
   badges: Badge[];
 }
 
+export interface UpdateProfilePayload {
+  username?: string;
+  fullName?: string;
+}
+
+export interface UpdatedProfileFields {
+  username: string;
+  fullName: string | null;
+}
+
 // ─── Snake_case API data shapes (matching BE JSON) ────────────────────────────
 
 export interface BasicProfileData {
@@ -66,9 +76,16 @@ export interface UserBadgesData {
   badges: BadgeItem[];
 }
 
+export interface UpdateProfileData {
+  user_id: number;
+  username: string;
+  full_name: string | null;
+}
+
 export type BasicProfileResponse = ApiResponse<BasicProfileData>;
 export type PersonalStatsResponse = ApiResponse<PersonalStatsData>;
 export type UserBadgesResponse = ApiResponse<UserBadgesData>;
+export type UpdateProfileResponse = ApiResponse<UpdateProfileData>;
 
 // ─── Redux State ──────────────────────────────────────────────────────────────
 
@@ -80,10 +97,12 @@ export interface ProfileState {
     basicInfo: boolean;
     stats: boolean;
     badges: boolean;
+    update: boolean;
   };
   error: {
     basicInfo: string | null;
     stats: string | null;
     badges: string | null;
+    update: string | null;
   };
 }

@@ -4,6 +4,8 @@ import { profileService } from "@/services/profileService";
 import type {
   BasicProfileInfo,
   PersonalStats,
+  UpdateProfilePayload,
+  UpdatedProfileFields,
   UserBadges,
 } from "@/types/profile";
 
@@ -95,6 +97,33 @@ export const fetchUserBadges = createAsyncThunk<
       error?.response?.data?.error?.message ??
       error?.message ??
       "Failed to load badges";
+    return rejectWithValue(message);
+  }
+});
+
+export const updateProfile = createAsyncThunk<
+  UpdatedProfileFields,
+  UpdateProfilePayload,
+  { rejectValue: string }
+>("profile/updateProfile", async (payload, { rejectWithValue }) => {
+  try {
+    const body: { username?: string; full_name?: string } = {};
+    if (payload.username !== undefined) body.username = payload.username;
+    if (payload.fullName !== undefined) body.full_name = payload.fullName;
+
+    const response = await profileService.updateProfile(body);
+    if (!response.success || !response.data) {
+      return rejectWithValue(
+        response.error?.message ?? "Failed to update profile",
+      );
+    }
+    const d = response.data;
+    return { username: d.username, fullName: d.full_name };
+  } catch (error: any) {
+    const message =
+      error?.response?.data?.error?.message ??
+      error?.message ??
+      "Failed to update profile";
     return rejectWithValue(message);
   }
 });

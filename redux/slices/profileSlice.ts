@@ -4,6 +4,7 @@ import {
   fetchBasicProfile,
   fetchPersonalStats,
   fetchUserBadges,
+  updateProfile,
 } from "@/redux/thunks/profileThunks";
 import type { ProfileState } from "@/types/profile";
 
@@ -11,8 +12,8 @@ const initialState: ProfileState = {
   basicInfo: null,
   stats: null,
   badges: null,
-  loading: { basicInfo: false, stats: false, badges: false },
-  error: { basicInfo: null, stats: null, badges: null },
+  loading: { basicInfo: false, stats: false, badges: false, update: false },
+  error: { basicInfo: null, stats: null, badges: null, update: null },
 };
 
 const profileSlice = createSlice({
@@ -20,6 +21,9 @@ const profileSlice = createSlice({
   initialState,
   reducers: {
     resetProfile: () => initialState,
+    clearUpdateError: (state) => {
+      state.error.update = null;
+    },
   },
   extraReducers: (builder) => {
     // ── fetchBasicProfile ─────────────────────────────────────────────────────
@@ -66,8 +70,26 @@ const profileSlice = createSlice({
         state.loading.badges = false;
         state.error.badges = action.payload ?? "Failed to load badges";
       });
+
+    // ── updateProfile ─────────────────────────────────────────────────────────
+    builder
+      .addCase(updateProfile.pending, (state) => {
+        state.loading.update = true;
+        state.error.update = null;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.loading.update = false;
+        if (state.basicInfo) {
+          state.basicInfo.username = action.payload.username;
+          state.basicInfo.fullName = action.payload.fullName;
+        }
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.loading.update = false;
+        state.error.update = action.payload ?? "Failed to update profile";
+      });
   },
 });
 
-export const { resetProfile } = profileSlice.actions;
+export const { resetProfile, clearUpdateError } = profileSlice.actions;
 export default profileSlice.reducer;

@@ -1,11 +1,13 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import type { BasicProfileInfo } from "@/types/profile";
 
 interface ProfileHeaderProps {
   info: BasicProfileInfo | null;
   isLoading: boolean;
+  onEditPress?: () => void;
 }
 
 function getInitials(fullName: string | null, username: string): string {
@@ -24,7 +26,11 @@ function formatJoinDate(isoDate: string): string {
   });
 }
 
-export function ProfileHeader({ info, isLoading }: ProfileHeaderProps) {
+export function ProfileHeader({
+  info,
+  isLoading,
+  onEditPress,
+}: ProfileHeaderProps) {
   if (isLoading || !info) {
     return (
       <View style={styles.container}>
@@ -55,6 +61,15 @@ export function ProfileHeader({ info, isLoading }: ProfileHeaderProps) {
           Member since {formatJoinDate(info.joinDate)}
         </Text>
       </View>
+      {onEditPress ? (
+        <TouchableOpacity style={styles.editButton} onPress={onEditPress}>
+          <Ionicons
+            name="create-outline"
+            size={20}
+            color="rgba(255,255,255,0.85)"
+          />
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }
@@ -113,5 +128,9 @@ const styles = StyleSheet.create({
     height: 14,
     borderRadius: 7,
     backgroundColor: "rgba(255,255,255,0.2)",
+  },
+  editButton: {
+    padding: 8,
+    alignSelf: "flex-start",
   },
 });

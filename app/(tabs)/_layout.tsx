@@ -39,19 +39,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="stats"
-        options={{
-          title: "Profile",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              size={24}
-              name={focused ? "person" : "person-outline"}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="leaders"
         options={{
           title: "Leaders",
@@ -65,13 +52,26 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="stats"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              size={24}
+              name={focused ? "person" : "person-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               size={24}
-              name={focused ? "person" : "person-outline"}
+              name={focused ? "settings" : "settings-outline"}
               color={color}
             />
           ),
